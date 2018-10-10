@@ -196,7 +196,7 @@ namespace Serilog.Sinks.Elasticsearch
             var exceptionMethod = string.Empty;
             var hresult = exception.HResult;
             var source = exception.Source;
-            var className = string.Empty;
+            var className = exception.GetType().FullName;
 
 #else
             var si = new SerializationInfo(exception.GetType(), new FormatterConverter());

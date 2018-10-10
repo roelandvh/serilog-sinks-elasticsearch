@@ -22,6 +22,16 @@ namespace Serilog.Sinks.Elasticsearch.Tests
             properties: Enumerable.Empty<LogEventProperty>()
         );
 
+        static LogEvent CreateExceptionLogEvent(Exception exception) =>
+            new LogEvent
+            (
+                DateTimeOffset.Now,
+                LogEventLevel.Debug,
+                exception: exception,
+                messageTemplate: new MessageTemplate(Enumerable.Empty<MessageTemplateToken>()),
+                properties: Enumerable.Empty<LogEventProperty>()
+            );
+
         static void CheckProperties(Func<LogEvent> logEventProvider, ElasticsearchJsonFormatter formatter, Action<string> assert)
         {
             string result = null;
@@ -52,6 +62,14 @@ namespace Serilog.Sinks.Elasticsearch.Tests
             Assert.DoesNotContain
             (
                 propertyToCheck,
+                result,
+                StringComparison.CurrentCultureIgnoreCase
+            );
+
+        static void ContainsPropertyWithValue(string propertyToCheck, string expectedValue, string result) =>
+            Assert.Contains
+            (
+                $"{propertyToCheck}{expectedValue}",
                 result,
                 StringComparison.CurrentCultureIgnoreCase
             );
@@ -132,6 +150,17 @@ namespace Serilog.Sinks.Elasticsearch.Tests
                 {
                     Assert.EndsWith("closingDelimiter", result);
                 });
+        }
+
+        [Fact]
+        public void When_rendering_exception_ClassName_property_is_filled()
+        {
+            var exception = new InvalidOperationException("this is a test InvalidOperationException");
+
+            CheckProperties(
+                () => CreateExceptionLogEvent(exception),
+                new ElasticsearchJsonFormatter(),
+                result => ContainsPropertyWithValue(FormatProperty("ClassName"), "\"System.InvalidOperationException\"", result));
         }
     }
 }
