@@ -12,15 +12,16 @@ namespace Serilog.Sinks.Elasticsearch.Tests
     public class ElasticsearchJsonFormatterTests
     {
         #region Helpers
+
         static LogEvent CreateLogEvent() =>
-        new LogEvent
-        (
-            DateTimeOffset.Now,
-            LogEventLevel.Debug,
-            exception: null,
-            messageTemplate: new MessageTemplate(Enumerable.Empty<MessageTemplateToken>()),
-            properties: Enumerable.Empty<LogEventProperty>()
-        );
+            new LogEvent
+            (
+                DateTimeOffset.Now,
+                LogEventLevel.Debug,
+                exception: null,
+                messageTemplate: new MessageTemplate(Enumerable.Empty<MessageTemplateToken>()),
+                properties: Enumerable.Empty<LogEventProperty>()
+            );
 
         static LogEvent CreateExceptionLogEvent(Exception exception) =>
             new LogEvent
@@ -58,6 +59,7 @@ namespace Serilog.Sinks.Elasticsearch.Tests
                 result,
                 StringComparison.CurrentCultureIgnoreCase
             );
+
         static void DoesNotContainsProperty(string propertyToCheck, string result) =>
             Assert.DoesNotContain
             (
@@ -74,7 +76,8 @@ namespace Serilog.Sinks.Elasticsearch.Tests
                 StringComparison.CurrentCultureIgnoreCase
             );
 
-        static string FormatProperty(string property) => $"\"{property}\":"; 
+        static string FormatProperty(string property) => $"\"{property}\":";
+
         #endregion
 
         [Theory]
